@@ -13,3 +13,4 @@
 * [what's a netcat](whats_a_net_cat)
 * [strings it](strings_it)
 * [easy1](easy1)
+* [where are the robots](where_are_the_robots)
