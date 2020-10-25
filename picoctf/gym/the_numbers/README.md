@@ -1,6 +1,6 @@
 ### the numbers
 
-![the number](the_numbers.jpg)
+![the numbers](the_numbers.png)
 
 the numbers represent the alphabet 1 indexed.
 
