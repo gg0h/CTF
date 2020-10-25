@@ -4,7 +4,7 @@
 
 * [2warm](2warm)
 * [garden](garden)
-* [insp3ct0r](insp3ct0r)
+* [insp3ct0r](Insp3ct0r)
 * [let's warm up](lets_warmup)
 * [the numbers](the_numbers)
 * [vault_door_1](vault_door_1)
