@@ -6,7 +6,7 @@ get the image
 
 we are given the image here
 
-![img](shhob.jpeg)
+![img](shoob.jpeg)
 
 running exiftool we get the flag in the metadata
 
