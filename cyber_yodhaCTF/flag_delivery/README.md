@@ -1,0 +1,65 @@
+### Flag Delivery
+
+```
+Our good friend Yeltsa Kcir ordered a flag for us from the renowned flag delivery service. We got their letter today, but we can’t see the flag they sent us. Apparently Yeltsa has been talking with the scientist Odec Esrom. Can you find the flag he hid for us?
+```
+
+"Yeltsa Kcir" = "Rick Astley" haha
+"Odec Esrom" = Morse code
+
+```
+D ?M6?M6?M6?M6 ?M6D D?M6 D?M6D
+D?M6DD DDD ?M6?M6D
+?M6?M6D?M6 DDD ?M6D?M6
+DDD ?M6D?M6 D?M6?M6 ?M6 ?M6D?M6 ?M6?M6 D?M6 DD?M6
+D?M6DD ?M6 ?M6D?M6?M6 D ?M6?M6?M6 ?M6D
+D?M6D D?M6D?M6 ?M6?M6 ?M6D?M6 ?M6DDDD?M6 ?M6?M6?M6
+?M6?M6D?M6 ?M6D?M6?M6 ?M6D DD?M6
+D?M6?M6 ?M6 ?M6D?M6?M6 ?M6?M6 ?M6?M6?M6D ?M6 ?M6D?M6 D?M6DD D?M6D?M6DD
+D?M6DD DDD ?M6?M6D ?M6D?M6
+?M6?M6D?M6 ?M6D?M6?M6 ?M6D DD?M6
+?M6?M6 ?M6?M6?M6
+D?M6D?M6 D?M6DD D?M6D?M6 D ?M6?M6D?M6  ?M6D?M6 ?M6?M6?M6DD ?M6DD?M6D?M6 D?M6?M6 ?M6?M6DD?M6D D?M6?M6?M6 ?M6?M6?M6DD D ?M6DD ?M6?M6?M6DD ?M6?M6?M6DD D?M6 ?M6?M6DD?M6D D ?M6?M6?M6?M6 ?M6?M6?M6DD ?M6?M6DD?M6D ?M6D?M6?M6 ?M6DDDD D?M6 ?M6?M6?M6DD ?M6?M6?M6  ?M6D?M6D?M6D
+?M6DD ?M6
+?M6?M6?M6?M6 DDD ?M6DD?M6 ?M6
+D?M6DD DDD ?M6?M6D
+?M6D?M6?M6 ?M6?M6 D?M6D ?M6
+DDD ?M6?M6D ?M6D?M6
+?M6?M6?M6 ?M6 ?M6D?M6 ?M6?M6?M6D ?M6?M6 D?M6D?M6 ?M6
+?M6D D?M6 D?M6?M6
+D ?M6D?M6 D?M6DD
+?M6D DD?M6 ?M6D ?M6?M6 D?M6 ?M6D?M6D?M6D
+```
+
+so the snippets `D` and `?M6` must equate to dot and dash, just a case of trying each combination
+
+```
+D = -
+?M6 = -
+
+- .... .- -. -.-
+-.-- --- ..-
+..-. --- .-.
+--- .-. -.. . .-. .. -. --.
+-.-- . .-.. - ... .-
+-.- -.-. .. .-. .----. ...
+..-. .-.. .- --.
+-.. . .-.. .. ...- . .-. -.-- -.-.--
+-.-- --- ..- .-.
+..-. .-.. .- --.
+.. ...
+-.-. -.-- -.-. - ..-.  .-. ...-- .--.-. -.. ..--.- -... ...-- - .-- ...-- ...-- -. ..--.- - .... ...-- ..--.- .-.. .---- -. ...-- ...  .-.-.-
+.-- .
+.... --- .--. .
+-.-- --- ..-
+.-.. .. -.- .
+--- ..- .-.
+... . .-. ...- .. -.-. .
+.- -. -..
+- .-. -.--
+.- --. .- .. -. .-.-.-
+```
+
+translating gives `thannoooorderinneltsscir''laaeliveryyouulaaayctfr3@d_b3tw33n_th3_l1n3sssoppooikkuuerviccnnrrgain.`
+
+flag CYCTF{r3@d_b3tw33n_th3_l1n3s}
