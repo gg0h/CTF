@@ -101,3 +101,33 @@ truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk
 IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR
 
 ---
+
+#### level 11
+
+ROT13
+
+`tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt`
+
+The password is 5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu
+
+5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu
+
+---
+
+### level 12
+
+decompressing many different archives
+
+most used commands
+```
+tar -xf <file>
+gzip -d <file>
+bzip2 -d <file>
+```
+had to rename gz files for decompress to work
+
+finally,
+
+The password is 8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL
+
+8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL
