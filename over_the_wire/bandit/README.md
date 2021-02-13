@@ -307,4 +307,447 @@ we can read this file because the binary runs as user bandit20
 
 GbKksEFF4yrVs6il55v6gwY5aVje5f0j
 
+#### level 20
 
+There is a setuid binary in the homedirectory that does the following: it makes a connection to localhost on the port you specify as a commandline argument. It then reads a line of text from the connection and compares it to the password in the previous level (bandit20). If the password is correct, it will transmit the password for the next level (bandit21).
+
+NOTE: Try connecting to your own network daemon to see if it works as you think
+
+After some research into nc listening I discovered it doesn't behave as I had assumed, and data can be sent in both directions. With this discovery it is quite simple to start the challenge.
+
+ssh into the box and start a listener like so
+
+```sh
+nc -lvp 6969
+```
+
+where -l is listen -v is verbose -p is port
+
+now on a new terminal connect to the port with the suid binary
+
+```
+./suconnect 6969
+```
+
+passing the previous password through netcat we are given the next password
+
+```
+listening on [any] 6969 ...
+connect to [127.0.0.1] from localhost [127.0.0.1] 37384
+GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
+```
+
+gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
+
+#### level 21
+
+A program is running automatically at regular intervals from cron, the time-based job scheduler. Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+
+```sh
+bandit21@bandit:~$ cat /etc/cron.d
+cat: /etc/cron.d: Is a directory
+bandit21@bandit:~$ cd /etc/cron.d/
+bandit21@bandit:/etc/cron.d$ ls
+cronjob_bandit15_root  cronjob_bandit17_root  cronjob_bandit22  cronjob_bandit23  cronjob_bandit24  cronjob_bandit25_root
+bandit21@bandit:/etc/cron.d$ ls -al
+total 36
+drwxr-xr-x  2 root root 4096 Jul 11  2020 .
+drwxr-xr-x 87 root root 4096 May 14  2020 ..
+-rw-r--r--  1 root root   62 May 14  2020 cronjob_bandit15_root
+-rw-r--r--  1 root root   62 Jul 11  2020 cronjob_bandit17_root
+-rw-r--r--  1 root root  120 May  7  2020 cronjob_bandit22
+-rw-r--r--  1 root root  122 May  7  2020 cronjob_bandit23
+-rw-r--r--  1 root root  120 May 14  2020 cronjob_bandit24
+-rw-r--r--  1 root root   62 May 14  2020 cronjob_bandit25_root
+-rw-r--r--  1 root root  102 Oct  7  2017 .placeholder
+bandit21@bandit:/etc/cron.d$ cd cronjob_bandit22
+-bash: cd: cronjob_bandit22: Not a directory
+bandit21@bandit:/etc/cron.d$ cat cronjob_bandit22 
+@reboot bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+* * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+bandit21@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit22.sh 
+#!/bin/bash
+chmod 644 /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+cat /etc/bandit_pass/bandit22 > /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+bandit21@bandit:/etc/cron.d$ cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
+bandit21@bandit:/etc/cron.d$ 
+```
+
+Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
+
+#### level 22
+
+```
+bandit22@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit23.sh 
+#!/bin/bash
+
+myname=$(whoami)
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+bandit22@bandit:/etc/cron.d$ whoami
+bandit22
+bandit22@bandit:/etc/cron.d$ echo "bandit23" | md5sum | cut -d ' ' -f 1
+35964510399388ff8cd7da6f7927c82b
+bandit22@bandit:/etc/cron.d$ cat /tmp/35964510399388ff8cd7da6f7927c82b
+cat: /tmp/35964510399388ff8cd7da6f7927c82b: No such file or directory
+bandit22@bandit:/etc/cron.d$ echo "I am user bandit23" | md5sum | cut -d ' ' -f 1
+8ca319486bfbbc3663ea0fbe81326349
+bandit22@bandit:/etc/cron.d$ cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n
+bandit22@bandit:/etc/cron.d$ 
+```
+
+jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n
+
+#### level 23
+
+
+```
+bandit23@bandit:/etc/cron.d$ cat cronjob_bandit24
+@reboot bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+* * * * * bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+bandit23@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit24.sh 
+#!/bin/bash
+
+myname=$(whoami)
+
+cd /var/spool/$myname
+echo "Executing and deleting all scripts in /var/spool/$myname:"
+for i in * .*;
+do
+    if [ "$i" != "." -a "$i" != ".." ];
+    then
+        echo "Handling $i"
+        owner="$(stat --format "%U" ./$i)"
+        if [ "${owner}" = "bandit23" ]; then
+            timeout -s 9 60 ./$i
+        fi
+        rm -f ./$i
+    fi
+done
+
+
+```
+
+we need to write a script to get the output of bandit24's pass
+
+I made many silly mistakes with this, mainly finding a directory to write to, not realising you cannot write a file to /tmp but must create a dir in /tmp to write to, also using a folder leftover by another user on a different challenge so I didn't have write perms...
+
+I eventually settled on the script 
+
+```
+#!/bin/bash/
+
+cat /etc/bandit_pass/bandit24 2>&1 > /tmp/ytuy/pass24
+```
+
+I still had problems and couldn't figure out why my script would never write the pass file... then I realised my shebang line was wrong....
+
+```sh
+#!/bin/bash
+
+cat /etc/bandit_pass/bandit24 2>&1 > /tmp/ytuy/pass24
+```
+
+UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ
+
+
+#### level 24
+
+first create a text file with all combinations
+
+then pipe it to the nc client
+
+```sh
+cat tries.txt | nc localhost 30002
+```
+
+```
+Wrong! Please enter the correct pincode. Try again.
+Wrong! Please enter the correct pincode. Try again.
+Wrong! Please enter the correct pincode. Try again.
+Wrong! Please enter the correct pincode. Try again.
+Correct!
+The password of user bandit25 is uNG9O58gUE7snukf3bvZ0rxhtnjzSGzG
+```
+
+uNG9O58gUE7snukf3bvZ0rxhtnjzSGzG
+
+#### level 25
+
+ssh -i bandit26.sshkey -t bandit26@localhost
+
+make the terminal small enough to trigger more to cut off
+
+enter 'v' to enter visual mode for more
+
+set shell and escape
+
+```
+:set shell=/bin/bash
+:shell
+```
+5czgV9L3Xx8JPOyRbXh6lQbmIOWvPT6Z
+
+#### level26
+
+another suid binary
+
+```
+./bandit27-do cat /etc/bandit_pass/bandit27
+```
+3ba3118a22e93127a4ed485be72ef5ea
+
+#### level 27
+
+
+```
+bandit27@bandit:/tmp$ mkdir jkl
+bandit27@bandit:/tmp$ cd jkl
+bandit27@bandit:/tmp/jkl$ git clone ssh://bandit27-git@localhost/home/bandit27-git/repo
+Cloning into 'repo'...
+Could not create directory '/home/bandit27/.ssh'.
+The authenticity of host 'localhost (127.0.0.1)' can't be established.
+ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+Are you sure you want to continue connecting (yes/no)? yes
+Failed to add the host to the list of known hosts (/home/bandit27/.ssh/known_hosts).
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+
+bandit27-git@localhost's password: 
+Permission denied, please try again.
+bandit27-git@localhost's password: 
+remote: Counting objects: 3, done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 0 (delta 0)
+Receiving objects: 100% (3/3), done.
+bandit27@bandit:/tmp/jkl$ ls
+repo
+bandit27@bandit:/tmp/jkl$ cd repo/
+bandit27@bandit:/tmp/jkl/repo$ ls
+README
+bandit27@bandit:/tmp/jkl/repo$ cat README 
+The password to the next level is: 0ef186ac70e04ea33b4c1853d2526fa2
+bandit27@bandit:/tmp/jkl/repo$ 
+```
+
+0ef186ac70e04ea33b4c1853d2526fa2
+
+#### level 28
+
+```
+git clone ssh://bandit28-git@localhost/home/bandit28-git/repo
+```
+
+once examining the file
+
+```
+bandit28@bandit:/tmp/bnm/repo$ cat README.md 
+# Bandit Notes
+Some notes for level29 of bandit.
+
+## credentials
+
+- username: bandit29
+- password: xxxxxxxxxx
+
+```
+
+this hints at the git history
+
+checkout old commit 
+
+```
+git checkout c086d11a00c0648d095d04c089786efef5e01264
+```
+
+```sh
+bandit28@bandit:/tmp/bnm/repo$ cat README.md 
+# Bandit Notes
+Some notes for level29 of bandit.
+
+## credentials
+
+- username: bandit29
+- password: bbc96594b4e001778eee9975372716b2
+
+
+```
+
+bbc96594b4e001778eee9975372716b2
+
+#### level 29
+
+another git challenge clone the repo and look at the readme
+
+```
+bandit29@bandit:/tmp/zxc/repo$ cat README.md 
+# Bandit Notes
+Some notes for bandit30 of bandit.
+
+## credentials
+
+- username: bandit30
+- password: <no passwords in production!>
+
+```
+
+another branch maybe?
+
+no
+
+```
+# Bandit Notes
+Some notes for bandit30 of bandit.
+
+## credentials
+
+- username: bandit29
+- password: <no passwords in production!>
+
+
+```
+same password as before???
+
+no
+
+
+hmm I forgot remote branches
+
+```
+git branch --list -a
+
+* (HEAD detached at 18a6fd6)
+  master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/dev
+  remotes/origin/master
+  remotes/origin/sploits-dev
+
+```
+
+```
+git checkout remotes/origin/dev
+```
+
+
+```
+bandit29@bandit:/tmp/zxc/repo$ cat README.md 
+# Bandit Notes
+Some notes for bandit30 of bandit.
+
+## credentials
+
+- username: bandit30
+- password: 5b90576bedb2cc04c86a9e924ce42faf
+
+```
+
+5b90576bedb2cc04c86a9e924ce42faf
+
+#### level 30
+
+clone another repo
+
+```
+bandit30@bandit:/tmp/dfg/repo$ cat README.md 
+just an epmty file... muahaha
+```
+
+looking inside the .git directory...
+
+```sh
+bandit30@bandit:/tmp/dfg/repo/.git$ cat packed-refs 
+# pack-refs with: peeled fully-peeled 
+3aefa229469b7ba1cc08203e5d8fa299354c496b refs/remotes/origin/master
+f17132340e8ee6c159e0a4a6bc6f80e1da3b1aea refs/tags/secret
+```
+
+this is probably what we are looking for
+
+```
+bandit30@bandit:/tmp/dfg/repo/.git$ git tag
+secret
+bandit30@bandit:/tmp/dfg/repo/.git$ git show secret
+47e603bb428404d265f59c42920d81e5
+```
+
+47e603bb428404d265f59c42920d81e5
+
+#### level 31
+
+clone repo, readme
+
+```
+This time your task is to push a file to the remote repository.
+
+Details:
+    File name: key.txt
+    Content: 'May I come in?'
+    Branch: master
+
+```
+
+creating the key file and adding text is simple but on trying to add key to tracked files there is diffculty, git add. appears to ignore it. Trying directly
+
+```
+git add key.txt
+
+The following paths are ignored by one of your .gitignore files:
+key.txt
+Use -f if you really want to add them.
+```
+
+it is ignored by the .gitignore
+
+simply remove the condition in the .gitignore to add
+
+upon commiting and pushing we get the flag
+
+```
+Counting objects: 4, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (4/4), 327 bytes | 0 bytes/s, done.
+Total 4 (delta 0), reused 0 (delta 0)
+remote: ### Attempting to validate files... ####
+remote: 
+remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
+remote: 
+remote: Well done! Here is the password for the next level:
+remote: 56a9bf19c63d650ce78e6ec0354ee45e
+remote: 
+remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
+remote: 
+To ssh://localhost/home/bandit31-git/repo
+ ! [remote rejected] master -> master (pre-receive hook declined)
+error: failed to push some refs to 'ssh://bandit31-git@localhost/home/bandit31-git/repo'
+```
+56a9bf19c63d650ce78e6ec0354ee45e
+
+#### level 32
+
+```
+WELCOME TO THE UPPERCASE SHELL
+>> $0
+$ ls
+uppershell
+$ ls -al
+total 28
+drwxr-xr-x  2 root     root     4096 May  7  2020 .
+drwxr-xr-x 41 root     root     4096 May  7  2020 ..
+-rw-r--r--  1 root     root      220 May 15  2017 .bash_logout
+-rw-r--r--  1 root     root     3526 May 15  2017 .bashrc
+-rw-r--r--  1 root     root      675 May 15  2017 .profile
+-rwsr-x---  1 bandit33 bandit32 7556 May  7  2020 uppershell
+$ cat /etc/bandit_pass/bandit33
+c9c3199ddf4121b10cf581a98d51caee
+$ 
+```
+
+c9c3199ddf4121b10cf581a98d51caee
