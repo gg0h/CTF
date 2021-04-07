@@ -42,7 +42,7 @@ else:
 
 ```
 
-this is a simple py2 str format vulnerability
+this is a simple py2 input eval vulnerability
 
 ```
 What's your favorite number?
