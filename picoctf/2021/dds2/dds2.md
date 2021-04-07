@@ -1,8 +1,11 @@
 ### Disk Disk Sleuth2!
 
+basically just followed these :)
+
 https://www.lmgsecurity.com/sleuth-kit/
 https://www.hackernoon.com/getting-started-with-digital-forensics-using-the-sleuth-kit-c34a3wkg
 
+```
    _     _     _     _     _     _     _     _     _     _     _     _     _  
   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \ 
  ( p ) ( i ) ( c ) ( o ) ( C ) ( T ) ( F ) ( { ) ( f ) ( 0 ) ( r ) ( 3 ) ( n )
@@ -15,5 +18,6 @@ https://www.hackernoon.com/getting-started-with-digital-forensics-using-the-sleu
   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \   / \ 
  ( 3 ) ( _ ) ( f ) ( f ) ( 2 ) ( 7 ) ( f ) ( 1 ) ( 3 ) ( 9 ) ( } )
   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/   \_/ 
+```
 
 picoCTF{f0r3ns1c4t0r_n0v1c3_ff27f139}
