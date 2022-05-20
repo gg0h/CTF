@@ -4,7 +4,7 @@
 The biggest intergalactic newsletter agency has constantly been spreading misinformation about the energy crisis war. Bonnie's sources confirmed a hostile takeover of the agency took place a few months back, and we suspect the Golden Fang army is behind this. Ulysses found us a potential access point to their agency servers. Can you hack their newsletter subscribe portal and get us entry?
 ```
 
-examinging the source of the challenge we find unsafe string interpolation leading to SQL injection
+examining the source of the challenge we find unsafe string interpolation leading to SQL injection
 
 ```php
 
